@@ -17,7 +17,7 @@
 ![시스템 구조](https://raw.githubusercontent.com/FurEmotion/FurEmotion-Backend/refs/heads/main/static/system_architecture.png)
 
 - Backend는 대규모 요청과 빠른 비동기 처리를 지원하는 **FastAPI** 프레임워크를 사용합니다.
-  = App과의 소통은 **RESTful API**를 통해 이루어집니다.
+- App과의 소통은 **RESTful API**를 통해 이루어집니다.
 - **sqlalchemy**를 통해 **MySQL** 데이터베이스와 연동합니다.
 - **Pydantic**을 통해 데이터 검증 및 파싱을 수행합니다.
 - **JWT**를 통해 사용자 인증을 수행합니다.
