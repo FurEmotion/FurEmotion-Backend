@@ -12,7 +12,7 @@
 
 ### 시스템 구조
 
-![시스템 구조](https://raw.githubusercontent.com/jaewonE/FurEmotion-Backend/main/system_architecture.png)
+![시스템 구조](https://raw.githubusercontent.com/FurEmotion/FurEmotion-Backend/refs/heads/main/static/system_architecture.png)
 
 - Backend는 대규모 요청과 빠른 비동기 처리를 지원하는 **FastAPI** 프레임워크를 사용합니다.
   = App과의 소통은 **RESTful API**를 통해 이루어집니다.
