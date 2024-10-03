@@ -7,9 +7,12 @@ class SpeciesEnum(str, Enum):
     CAT = 'cat'
 
 
-EN_TO_KR = {
+SPECIES_EN_TO_KR = {
     'dog': '개',
     'cat': '고양이',
 }
 
-KR_TO_EN = {v: k for k, v in EN_TO_KR.items()}
+SPECIES_KR_TO_EN = {v: k for k, v in SPECIES_EN_TO_KR.items()}
+
+allowed_species_en = tuple(e.value for e in SpeciesEnum)
+allowed_species_kr = tuple(SPECIES_EN_TO_KR.values())

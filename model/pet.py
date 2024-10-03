@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from db import DB_Base
-from enums.species import KR_TO_EN
+from enums.species import SPECIES_KR_TO_EN
 
 
 class PetTable(DB_Base):
@@ -29,15 +29,15 @@ class PetTable(DB_Base):
 
     def __init__(self, **kwargs):
         species = kwargs.get('species')
-        if species in KR_TO_EN:
-            kwargs['species'] = KR_TO_EN[species]
+        if species in SPECIES_KR_TO_EN:
+            kwargs['species'] = SPECIES_KR_TO_EN[species]
         super().__init__(**kwargs)
 
     @classmethod
     def create(cls, user_id: str, data: dict) -> PetTable:
         data['user_id'] = user_id
-        if 'species' in data and data['species'] in KR_TO_EN:
-            data['species'] = KR_TO_EN[data['species']]
+        if 'species' in data and data['species'] in SPECIES_KR_TO_EN:
+            data['species'] = SPECIES_KR_TO_EN[data['species']]
         return cls(**data)
 
     def __repr__(self):
@@ -59,8 +59,8 @@ class PetTable(DB_Base):
     def update(self, **kwargs):
         if 'species' in kwargs:
             species = kwargs['species']
-            if species in KR_TO_EN:
-                kwargs['species'] = KR_TO_EN[species]
+            if species in SPECIES_KR_TO_EN:
+                kwargs['species'] = SPECIES_KR_TO_EN[species]
         for key, value in kwargs.items():
             setattr(self, key, value)
         return self
