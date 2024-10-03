@@ -19,14 +19,8 @@ class PetService:
                 raise NegativeAgeError("Age cannot be negative")
 
             # Create PetTable instance with standardized species
-            pet_table = PetTable(
-                user_id=user_id,
-                name=create_pet_input.name,
-                gender=create_pet_input.gender,
-                age=create_pet_input.age,
-                species=create_pet_input.species,
-                sub_species=create_pet_input.sub_species,
-            )
+            pet_table = PetTable.create(
+                user_id, create_pet_input.model_dump(exclude={'user_id'}))
 
             # Add and commit to the database
             db.add(pet_table)

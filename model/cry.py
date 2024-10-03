@@ -48,9 +48,3 @@ class CryTable(DB_Base):
         for key, value in kwargs.items():
             setattr(self, key, value)
         return self
-
-    def update_from_model(self, model: Cry):
-        return self.update(**model.dict())
-
-    def update_from_dict(self, data: dict):
-        return self.update(**data)
