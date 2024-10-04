@@ -1,17 +1,13 @@
-# apis/user.py
-from fastapi import APIRouter, HTTPException, Depends
-from starlette.status import (
-    HTTP_400_BAD_REQUEST,
-    HTTP_403_FORBIDDEN,
-    HTTP_404_NOT_FOUND,
-    HTTP_500_INTERNAL_SERVER_ERROR)
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+
 from auth.auth_bearer import JWTBearer
 from auth.auth_handler import signJWT
 from services.user import user_service
 from schemas.user import *
 from db import get_db_session
 from error.exceptions import *
+from error.handler import handle_http_exceptions
 
 router = APIRouter(
     prefix="/user",
@@ -21,98 +17,58 @@ router = APIRouter(
 
 
 @router.post("/me", response_model=CreateUserOutput)
+@handle_http_exceptions
 def create_user_endpoint(
         create_user_input: CreateUserInput,
         db: Session = Depends(get_db_session)) -> CreateUserOutput:
-    try:
-        user = user_service.create_user(db, create_user_input)
-        jwt_token = signJWT(user.uid)
-        return CreateUserOutput(user=user, token=jwt_token, success=True, message="User created successfully")
-    except ValidationError as ve:
-        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
-    except Exception:
-        raise HTTPException(
-            status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
+    user = user_service.create_user(db, create_user_input)
+    jwt_token = signJWT(user.uid)
+    return CreateUserOutput(user=user, token=jwt_token, success=True, message="User created successfully")
 
 
 @router.get("/me", dependencies=[Depends(JWTBearer())], response_model=GetUserOutput)
+@handle_http_exceptions
 def get_current_user_endpoint(
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> GetUserOutput:
-    try:
-        user = user_service.get_user_by_id(db, user_id)
-        return GetUserOutput(user=user, success=True, message="User fetched successfully")
-    except UserNotFoundError as unfe:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(unfe))
-    except ValidationError as ve:
-        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
-    except Exception:
-        raise HTTPException(
-            status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
+    user = user_service.get_user_by_id(db, user_id)
+    return GetUserOutput(user=user, success=True, message="User fetched successfully")
 
 
 @router.put("/me", dependencies=[Depends(JWTBearer())], response_model=UpdateUserOutput)
+@handle_http_exceptions
 def update_user_endpoint(
         update_user_input: UpdateUserInput,
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> UpdateUserOutput:
-    try:
-        user = user_service.update_user(db, user_id, update_user_input)
-        return UpdateUserOutput(user=user, success=True, message="User updated successfully")
-    except UserNotFoundError as unfe:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(unfe))
-    except ValidationError as ve:
-        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
-    except Exception:
-        raise HTTPException(
-            status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
+    user = user_service.update_user(db, user_id, update_user_input)
+    return UpdateUserOutput(user=user, success=True, message="User updated successfully")
 
 
 @router.delete("/me", dependencies=[Depends(JWTBearer())], response_model=DeleteUserOutput)
+@handle_http_exceptions
 def delete_user_endpoint(
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> DeleteUserOutput:
-    try:
-        user_service.delete_user(db, user_id)
-        return DeleteUserOutput(success=True, message="User deleted successfully")
-    except UserNotFoundError as unfe:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(unfe))
-    except ValidationError as ve:
-        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
-    except Exception:
-        raise HTTPException(
-            status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
+    user_service.delete_user(db, user_id)
+    return DeleteUserOutput(success=True, message="User deleted successfully")
 
 
 @router.get("/user/{target_user_id}", dependencies=[Depends(JWTBearer())], response_model=GetUserOutput)
+@handle_http_exceptions
 def get_user_by_id_endpoint(
         target_user_id: str,
         db: Session = Depends(get_db_session),
         requester_id: str = Depends(JWTBearer())) -> GetUserOutput:
-    try:
-        user = user_service.get_user_by_id(db, target_user_id)
-        return GetUserOutput(user=user, success=True, message="User fetched successfully")
-    except UserNotFoundError as unfe:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(unfe))
-    except ValidationError as ve:
-        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
-    except Exception:
-        raise HTTPException(
-            status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
+    user = user_service.get_user_by_id(db, target_user_id)
+    return GetUserOutput(user=user, success=True, message="User fetched successfully")
 
 
 @router.post("/me/login", response_model=LoginUserOutput)
+@handle_http_exceptions
 def login(
         login_user_input: LoginUserInput,
         db: Session = Depends(get_db_session)) -> LoginUserOutput:
-    try:
-        user = user_service.login(db, login_user_input)
-        jwt_token = signJWT(user.uid)
-        return LoginUserOutput(user=user, token=jwt_token, success=True, message="User logged in successfully")
-    except UserNotFoundError as unfe:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(unfe))
-    except UnauthorizedError as ue:
-        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail=str(ue))
-    except Exception:
-        raise HTTPException(
-            status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
+    user = user_service.login(db, login_user_input)
+    jwt_token = signJWT(user.uid)
+    return LoginUserOutput(user=user, token=jwt_token, success=True, message="User logged in successfully")
