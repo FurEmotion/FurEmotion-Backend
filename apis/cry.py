@@ -6,7 +6,6 @@ from starlette.status import (
     HTTP_404_NOT_FOUND,
     HTTP_500_INTERNAL_SERVER_ERROR)
 from sqlalchemy.orm import Session
-import logging
 from typing import Optional
 from datetime import datetime
 
@@ -15,8 +14,6 @@ from services.cry import cry_service
 from schemas.cry import *
 from db import get_db_session
 from error.exceptions import *
-
-logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/cry",
@@ -37,10 +34,8 @@ def create_cry_endpoint(
         return CreateCryOutput(cry=cry, success=True, message="Cry created successfully")
 
     except (ValidationError, UnauthorizedError) as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in create_cry API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -56,13 +51,10 @@ def get_cry_endpoint(
         cry.to_korean()
         return GetCryOutput(cry=cry, success=True, message="Cry fetched successfully")
     except CryNotFoundError as cnfe:
-        logger.error(f"Cry not found: {cnfe}")
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(cnfe))
     except ValidationError as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in get_cry API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -79,13 +71,10 @@ def get_pet_cries_endpoint(
             cry.to_korean()
         return GetPetCriesOutput(cries=cries, success=True, message="Cries fetched successfully")
     except UnauthorizedError as ue:
-        logger.error(f"Unauthorized access: {ue}")
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail=str(ue))
     except ValidationError as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in get_pet_cries API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -102,13 +91,10 @@ def update_cry_endpoint(
         cry.to_korean()
         return UpdateCryOutput(cry=cry, success=True, message="Cry updated successfully")
     except CryNotFoundError as cnfe:
-        logger.error(f"Cry not found: {cnfe}")
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(cnfe))
     except (ValidationError) as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in update_cry API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -123,13 +109,10 @@ def delete_cry_endpoint(
         cry_service.delete_cry(db, cry_id, user_id)
         return DeleteCryOutput(success=True, message="Cry deleted successfully")
     except CryNotFoundError as cnfe:
-        logger.error(f"Cry not found: {cnfe}")
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(cnfe))
     except (ValidationError) as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in delete_cry API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -148,10 +131,8 @@ def get_pets_with_state_endpoint(
             cry.to_korean()
         return GetPetsWithStateOutput(pets=cries, success=True, message="Cries fetched successfully")
     except ValidationError as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in get_pets_with_state API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -172,10 +153,8 @@ def get_pets_between_time_endpoint(
             cry.to_korean()
         return GetPetsBetweenTimeOutput(pets=cries, success=True, message="Cries fetched successfully")
     except ValidationError as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in get_pets_between_time API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )

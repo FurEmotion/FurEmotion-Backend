@@ -30,7 +30,6 @@ class UserService:
                 raise DuplicateEmailError("Email already exists")
 
             # Use UserTable.create to instantiate a new user
-            print("Create Values: ", create_user_input.model_dump())
             user_table = UserTable.create(
                 create_user_input.model_dump())
 

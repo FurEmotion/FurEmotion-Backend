@@ -19,7 +19,7 @@ DB_PATH = os.path.join(BASE_DIR, "Database.db")
 DB_URL = f'sqlite:///{DB_PATH}'
 
 engine = create_engine(DB_URL, connect_args={
-                       "check_same_thread": False}, echo=True)
+                       "check_same_thread": False}, echo=False)
 
 
 @event.listens_for(engine, "connect")

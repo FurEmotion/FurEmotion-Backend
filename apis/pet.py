@@ -6,15 +6,12 @@ from starlette.status import (
     HTTP_404_NOT_FOUND,
     HTTP_500_INTERNAL_SERVER_ERROR)
 from sqlalchemy.orm import Session
-import logging
 
 from auth.auth_bearer import JWTBearer
 from services.pet import pet_service
 from schemas.pet import *
 from db import get_db_session
 from error.exceptions import *
-
-logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/pet",
@@ -35,10 +32,8 @@ def create_pet_endpoint(
         return CreatePetOutput(pet=pet, success=True, message="Pet created successfully")
 
     except (ValidationError, NegativeAgeError, InvalidSpeciesError) as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in create_pet API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -54,13 +49,10 @@ def get_pet_endpoint(
         pet.to_korean()
         return GetPetOutput(pet=pet, success=True, message="Pet fetched successfully")
     except PetNotFoundError as pnfe:
-        logger.error(f"Pet not found: {pnfe}")
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(pnfe))
     except ValidationError as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in get_pet API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -82,13 +74,10 @@ def get_user_pets_endpoint(
 
         return GetUserPetsOutput(pets=pets, success=True, message="Pets fetched successfully")
     except UnauthorizedError as ue:
-        logger.error(f"Unauthorized access: {ue}")
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail=str(ue))
     except ValidationError as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in get_user_pets API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -105,13 +94,10 @@ def update_pet_endpoint(
         pet.to_korean()
         return UpdatePetOutput(pet=pet, success=True, message="Pet updated successfully")
     except PetNotFoundError as pnfe:
-        logger.error(f"Pet not found: {pnfe}")
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(pnfe))
     except (ValidationError, NegativeAgeError, InvalidSpeciesError) as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in update_pet API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
@@ -126,13 +112,10 @@ def delete_pet_endpoint(
         pet_service.delete_pet(db, pet_id, user_id)
         return DeletePetOutput(success=True, message="Pet deleted successfully")
     except PetNotFoundError as pnfe:
-        logger.error(f"Pet not found: {pnfe}")
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=str(pnfe))
     except ValidationError as ve:
-        logger.error(f"Validation error: {ve}")
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
-        logger.exception(f"Unexpected error in delete_pet API: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
