@@ -112,3 +112,6 @@ class PetService:
             db.rollback()
             logger.exception("An error occurred while deleting pet")
             raise ValidationError("Failed to delete pet") from e
+
+
+pet_service = PetService()

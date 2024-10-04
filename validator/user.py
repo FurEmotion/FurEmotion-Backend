@@ -1,6 +1,4 @@
 # validator/user.py
-from enums.gender import allowed_gender_en, allowed_gender_kr
-from pydantic import ValidationError
 import re
 
 

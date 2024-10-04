@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 import logging
 
 from auth.auth_bearer import JWTBearer
-from services.pet import PetService
+from services.pet import pet_service
 from schemas.pet import *
 from db import get_db_session
 from error.exceptions import *
@@ -21,8 +21,6 @@ router = APIRouter(
     tags=["pet"],
     responses={404: {"description": "Not found"}},
 )
-
-pet_service = PetService()
 
 
 @router.post("/create", dependencies=[Depends(JWTBearer())], response_model=CreatePetOutput)

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 import logging
 from auth.auth_bearer import JWTBearer
 from auth.auth_handler import signJWT
-from services.user import UserService
+from services.user import user_service
 from schemas.user import *
 from db import get_db_session
 from error.exceptions import *
@@ -21,8 +21,6 @@ router = APIRouter(
     tags=["user"],
     responses={404: {"description": "Not found"}},
 )
-
-user_service = UserService()
 
 
 @router.post("/me", response_model=CreateUserOutput)

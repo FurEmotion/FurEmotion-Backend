@@ -19,6 +19,11 @@ class PetNotFoundError(Exception):
     pass
 
 
+class CryNotFoundError(Exception):
+    """Raised when a cry is not found."""
+    pass
+
+
 class UserNotFoundError(Exception):
     """Raised when a user is not found."""
     pass

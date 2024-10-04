@@ -140,3 +140,6 @@ class UserService:
         except Exception as e:
             logger.exception("An error occurred while logging in user")
             raise ValidationError("Failed to login user") from e
+
+
+user_service = UserService()

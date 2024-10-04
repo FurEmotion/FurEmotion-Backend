@@ -40,6 +40,10 @@ def cry_table_to_schema(cry_table: CryTable) -> Cry:
     return Cry(
         id=cry_table.id,
         pet_id=cry_table.pet_id,
-        cry=cry_table.cry,
-        created_at=cry_table.created_at
+        time=cry_table.time,
+        state=cry_table.state,
+        audioId=cry_table.audioId,
+        predictMap=cry_table.predictMap,
+        intensity=cry_table.intensity,
+        duration=cry_table.duration
     )
