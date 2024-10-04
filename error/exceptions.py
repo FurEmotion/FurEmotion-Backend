@@ -19,6 +19,16 @@ class PetNotFoundError(Exception):
     pass
 
 
+class UserNotFoundError(Exception):
+    """Raised when a user is not found."""
+    pass
+
+
 class UnauthorizedError(Exception):
-    """Raised when a user is unauthorized to perform an action."""
+    """Raised when a user is not authorized to perform an action."""
+    pass
+
+
+class DuplicateEmailError(Exception):
+    """Raised when attempting to create a user with an email that already exists."""
     pass

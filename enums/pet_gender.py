@@ -1,4 +1,4 @@
-# enums/gender.py
+# enums/pet_gender.py
 from enum import Enum
 
 

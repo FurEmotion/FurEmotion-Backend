@@ -21,6 +21,15 @@ class UserTable(DB_Base):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    @classmethod
+    def create(cls, uid: str, email: str, nickname: str, photoId: str = None) -> UserTable:
+        return cls(
+            uid=uid,
+            email=email,
+            nickname=nickname,
+            photoId=photoId
+        )
+
     def __repr__(self):
         return f"<User(uid={self.uid}, email={self.email}, nickname={self.nickname}, photoId={self.photoId})>"
 
