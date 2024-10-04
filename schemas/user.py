@@ -28,6 +28,7 @@ class User(BaseModel):
 
 
 class CreateUserInput(BaseModel):
+    uid: str
     email: EmailStr
     nickname: str
     photoId: Optional[str] = None
@@ -35,13 +36,10 @@ class CreateUserInput(BaseModel):
 
 class CreateUserOutput(BaseOutput):
     user: Optional[User] = None
+    token: Optional[dict] = None
 
 
 class GetUserOutput(BaseOutput):
-    user: Optional[User] = None
-
-
-class GetAnotherUserOutput(BaseOutput):
     user: Optional[User] = None
 
 
@@ -56,3 +54,13 @@ class UpdateUserOutput(BaseOutput):
 
 class DeleteUserOutput(BaseOutput):
     pass
+
+
+class LoginUserInput(BaseModel):
+    uid: str
+    email: EmailStr
+
+
+class LoginUserOutput(BaseOutput):
+    user: Optional[User] = None
+    token: Optional[dict] = None

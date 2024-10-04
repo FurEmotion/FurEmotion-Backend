@@ -32,3 +32,8 @@ class UnauthorizedError(Exception):
 class DuplicateEmailError(Exception):
     """Raised when attempting to create a user with an email that already exists."""
     pass
+
+
+class DuplicateUidError(Exception):
+    """Raised when attempting to create a user with an uid that already exists."""
+    pass

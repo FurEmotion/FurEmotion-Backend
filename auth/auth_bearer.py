@@ -11,7 +11,6 @@ class JWTBearer(HTTPBearer):
     async def __call__(self, request: Request):
         credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
         if credentials:
-            return 'id1'
             if not credentials.scheme == "Bearer":
                 raise HTTPException(
                     status_code=403, detail="Invalid authentication scheme.")
