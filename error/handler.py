@@ -1,5 +1,4 @@
 # error/handler.py
-import logging
 from fastapi import HTTPException
 from typing import Any, Callable
 import functools
@@ -12,9 +11,7 @@ from starlette.status import (
 )
 
 from error.exceptions import *
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+from log import logger
 
 
 # HTTP 예외를 처리하는 데코레이터 함수 정의
@@ -23,12 +20,12 @@ def handle_http_exceptions(func: Callable) -> Callable:
     @functools.wraps(func)
     async def async_wrapper(*args, **kwargs) -> Any:
         try:
-            # logger.info(
-            #     f"Calling async function: {func.__name__} with args: {args}, kwargs: {kwargs}")
+            logger.info(
+                f"Calling async function: {func.__name__} with args: {args}, kwargs: {kwargs}")
             # 원본 비동기 함수 실행
             result = await func(*args, **kwargs)
-            # logger.info(
-            #     f"Async function {func.__name__} executed successfully")
+            logger.info(
+                f"Async function {func.__name__} executed successfully")
             return result
         except (ValidationError, NegativeAgeError, InvalidSpeciesError,
                 DuplicateUidError, DuplicateEmailError) as ve:
@@ -56,11 +53,11 @@ def handle_http_exceptions(func: Callable) -> Callable:
     @functools.wraps(func)
     def sync_wrapper(*args, **kwargs) -> Any:
         try:
-            # logger.info(
-            #     f"Calling sync function: {func.__name__} with args: {args}, kwargs: {kwargs}")
+            logger.info(
+                f"Calling sync function: {func.__name__} with args: {args}, kwargs: {kwargs}")
             # 원본 동기 함수 실행
             result = func(*args, **kwargs)
-            # logger.info(f"Sync function {func.__name__} executed successfully")
+            logger.info(f"Sync function {func.__name__} executed successfully")
             return result
         except (ValidationError, NegativeAgeError, InvalidSpeciesError,
                 DuplicateUidError, DuplicateEmailError) as ve:

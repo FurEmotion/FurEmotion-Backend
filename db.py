@@ -3,12 +3,9 @@ import os
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-import logging
 
-from core.env import env
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# from core.env import env
+from log import logger
 
 # 1. Declarative Base 먼저 정의
 DB_Base = declarative_base()
