@@ -175,4 +175,6 @@ logs/
 
 # assets
 assets/
+
+# database
 Database.db

@@ -21,7 +21,7 @@ router = APIRouter(
 def create_user_endpoint(
         create_user_input: CreateUserInput,
         db: Session = Depends(get_db_session)) -> CreateUserOutput:
-    user = user_service.create_user(db, create_user_input)
+    user = user_service.create_user(db, create_user_input).to_korean()
     jwt_token = signJWT(user.uid)
     return CreateUserOutput(user=user, token=jwt_token, success=True, message="User created successfully")
 
@@ -31,7 +31,7 @@ def create_user_endpoint(
 def get_current_user_endpoint(
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> GetUserOutput:
-    user = user_service.get_user_by_id(db, user_id)
+    user = user_service.get_user_by_id(db, user_id).to_korean()
     return GetUserOutput(user=user, success=True, message="User fetched successfully")
 
 
@@ -41,7 +41,7 @@ def update_user_endpoint(
         update_user_input: UpdateUserInput,
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> UpdateUserOutput:
-    user = user_service.update_user(db, user_id, update_user_input)
+    user = user_service.update_user(db, user_id, update_user_input).to_korean()
     return UpdateUserOutput(user=user, success=True, message="User updated successfully")
 
 
@@ -60,7 +60,7 @@ def get_user_by_id_endpoint(
         target_user_id: str,
         db: Session = Depends(get_db_session),
         requester_id: str = Depends(JWTBearer())) -> GetUserOutput:
-    user = user_service.get_user_by_id(db, target_user_id)
+    user = user_service.get_user_by_id(db, target_user_id).to_korean()
     return GetUserOutput(user=user, success=True, message="User fetched successfully")
 
 
@@ -69,6 +69,6 @@ def get_user_by_id_endpoint(
 def login(
         login_user_input: LoginUserInput,
         db: Session = Depends(get_db_session)) -> LoginUserOutput:
-    user = user_service.login(db, login_user_input)
+    user = user_service.login(db, login_user_input).to_korean()
     jwt_token = signJWT(user.uid)
     return LoginUserOutput(user=user, token=jwt_token, success=True, message="User logged in successfully")

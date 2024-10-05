@@ -1,5 +1,5 @@
 # apis/cry.py
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
 
@@ -23,8 +23,7 @@ def create_cry_endpoint(
         create_cry_input: CreateCryInput,
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> CreateCryOutput:
-    cry = cry_service.create_cry(db, create_cry_input, user_id)
-    cry.to_korean()
+    cry = cry_service.create_cry(db, create_cry_input, user_id).to_korean()
     return CreateCryOutput(cry=cry, success=True, message="Cry created successfully")
 
 
@@ -34,8 +33,7 @@ def get_cry_endpoint(
         cry_id: int,
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> GetCryOutput:
-    cry = cry_service.get_cry_by_id(db, cry_id, user_id)
-    cry.to_korean()
+    cry = cry_service.get_cry_by_id(db, cry_id, user_id).to_korean()
     return GetCryOutput(cry=cry, success=True, message="Cry fetched successfully")
 
 
@@ -46,8 +44,8 @@ def get_pet_cries_endpoint(
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> GetPetCriesOutput:
     cries = cry_service.get_all_cries_by_pet(db, pet_id, user_id)
-    for cry in cries:
-        cry.to_korean()
+    for i in range(len(cries)):
+        cries[i] = cries[i].to_korean()
     return GetPetCriesOutput(cries=cries, success=True, message="Cries fetched successfully")
 
 
@@ -58,8 +56,8 @@ def update_cry_endpoint(
         update_cry_input: UpdateCryInput,
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> UpdateCryOutput:
-    cry = cry_service.update_cry(db, cry_id, update_cry_input, user_id)
-    cry.to_korean()
+    cry = cry_service.update_cry(
+        db, cry_id, update_cry_input, user_id).to_korean()
     return UpdateCryOutput(cry=cry, success=True, message="Cry updated successfully")
 
 
@@ -82,8 +80,8 @@ def get_pets_with_state_endpoint(
         user_id: str = Depends(JWTBearer())) -> GetPetsWithStateOutput:
     cries = cry_service.get_pets_with_state(
         db, pet_id, query_state, user_id)
-    for cry in cries:
-        cry.to_korean()
+    for i in range(len(cries)):
+        cries[i] = cries[i].to_korean()
     return GetPetsWithStateOutput(pets=cries, success=True, message="Cries fetched successfully")
 
 
@@ -98,6 +96,6 @@ def get_pets_between_time_endpoint(
         user_id: str = Depends(JWTBearer())) -> GetPetsBetweenTimeOutput:
     cries = cry_service.get_pets_between_time(
         db, pet_id, start_time, end_time, user_id)
-    for cry in cries:
-        cry.to_korean()
+    for i in range(len(cries)):
+        cries[i] = cries[i].to_korean()
     return GetPetsBetweenTimeOutput(pets=cries, success=True, message="Cries fetched successfully")
