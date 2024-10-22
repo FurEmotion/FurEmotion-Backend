@@ -71,21 +71,21 @@ def delete_cry_endpoint(
     return DeleteCryOutput(success=True, message="Cry deleted successfully")
 
 
-@router.get("/search/state", dependencies=[Depends(JWTBearer())], response_model=GetPetsWithStateOutput)
+@router.get("/search/state", dependencies=[Depends(JWTBearer())], response_model=GetCriesWithStateOutput)
 @handle_http_exceptions
 def get_pets_with_state_endpoint(
         pet_id: int = Query(..., description="ID of the pet"),
         query_state: str = Query(..., description="State to filter cries"),
         db: Session = Depends(get_db_session),
-        user_id: str = Depends(JWTBearer())) -> GetPetsWithStateOutput:
+        user_id: str = Depends(JWTBearer())) -> GetCriesWithStateOutput:
     cries = cry_service.get_pets_with_state(
         db, pet_id, query_state, user_id)
     for i in range(len(cries)):
         cries[i] = cries[i].to_korean()
-    return GetPetsWithStateOutput(pets=cries, success=True, message="Cries fetched successfully")
+    return GetCriesWithStateOutput(pets=cries, success=True, message="Cries fetched successfully")
 
 
-@router.get("/search/time", dependencies=[Depends(JWTBearer())], response_model=GetPetsBetweenTimeOutput)
+@router.get("/search/time", dependencies=[Depends(JWTBearer())], response_model=GetCriesBetweenTimeOutput)
 @handle_http_exceptions
 def get_pets_between_time_endpoint(
         pet_id: int = Query(..., description="ID of the pet"),
@@ -93,9 +93,9 @@ def get_pets_between_time_endpoint(
                                      description="Start time in ISO format"),
         end_time: datetime = Query(..., description="End time in ISO format"),
         db: Session = Depends(get_db_session),
-        user_id: str = Depends(JWTBearer())) -> GetPetsBetweenTimeOutput:
+        user_id: str = Depends(JWTBearer())) -> GetCriesBetweenTimeOutput:
     cries = cry_service.get_pets_between_time(
         db, pet_id, start_time, end_time, user_id)
     for i in range(len(cries)):
         cries[i] = cries[i].to_korean()
-    return GetPetsBetweenTimeOutput(pets=cries, success=True, message="Cries fetched successfully")
+    return GetCriesBetweenTimeOutput(pets=cries, success=True, message="Cries fetched successfully")

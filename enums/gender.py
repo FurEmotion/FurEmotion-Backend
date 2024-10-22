@@ -9,8 +9,8 @@ class Gender(str, Enum):
 
 
 GENDER_EN_TO_KR = {
-    'male': '남자',
-    'female': '여자',
+    'male': '남성',
+    'female': '여성',
     'unknown': '비공개',
 }
 

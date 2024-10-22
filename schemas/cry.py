@@ -95,9 +95,9 @@ class DeleteCryOutput(BaseOutput):
     pass  # No additional fields needed
 
 
-class GetPetsWithStateOutput(BaseOutput):
-    pets: Optional[List[Cry]] = None
+class GetCriesWithStateOutput(BaseOutput):
+    cries: Optional[List[Cry]] = None
 
 
-class GetPetsBetweenTimeOutput(BaseOutput):
-    pets: Optional[List[Cry]] = None
+class GetCriesBetweenTimeOutput(BaseOutput):
+    cries: Optional[List[Cry]] = None
