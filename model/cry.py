@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship, declarative_base
 from pydantic import BaseModel
 import uuid
 
-from db import DB_Base
+from db_base import DB_Base
 from enums.cry_state import CRY_STATE_KR_TO_EN
 from enums.cry_intensity import CRY_INTENSITY_KR_TO_EN
 

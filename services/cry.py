@@ -6,8 +6,10 @@ from datetime import datetime
 from schemas.cry import *
 from model.cry import CryTable
 from model.pet import PetTable
-from error.exceptions import (CryNotFoundError, UnauthorizedError)
+from error.exceptions import (
+    CryNotFoundError, UnauthorizedError, WrongCryOfSpeciesError)
 from utils.converters import cry_table_to_schema
+from enums.cry_state import check_right_cry_state
 
 
 class CryService:
@@ -22,6 +24,11 @@ class CryService:
         if not pet:
             raise UnauthorizedError(
                 "You are not authorized to create a cry for this pet")
+
+        notRightSpeciesError = check_right_cry_state(
+            pet.species, create_cry_input.state)
+        if notRightSpeciesError:
+            raise WrongCryOfSpeciesError(notRightSpeciesError)
 
         cry_table = CryTable(**create_cry_input.model_dump())
         db.add(cry_table)
@@ -56,6 +63,16 @@ class CryService:
         if not cry_table:
             raise CryNotFoundError(f"Cry with id {cry_id} not found")
 
+        pet = self._get_user_pet(db, cry_table.pet_id, user_id)
+        if not pet:
+            raise UnauthorizedError(
+                "You are not authorized to view cries for this pet")
+
+        notRightSpeciesError = check_right_cry_state(
+            pet.species, update_cry_input.state)
+        if notRightSpeciesError:
+            raise WrongCryOfSpeciesError(notRightSpeciesError)
+
         cry_table.update(**update_cry_input.model_dump(exclude_unset=True))
         db.commit()
         db.refresh(cry_table)
@@ -74,11 +91,20 @@ class CryService:
         db.commit()
 
     def get_pets_with_state(self, db: Session, pet_id: int, query_state: str, user_id: str) -> List[Cry]:
+        pet = self._get_user_pet(db, pet_id, user_id)
+        if not pet:
+            raise UnauthorizedError(
+                "You are not authorized to view cries for this pet")
+
         standardized_state = CRY_STATE_KR_TO_EN.get(query_state, query_state)
-        cry_tables = db.query(CryTable).join(PetTable).filter(
+        notRightSpeciesError = check_right_cry_state(
+            pet.species, standardized_state)
+        if notRightSpeciesError:
+            raise WrongCryOfSpeciesError(notRightSpeciesError)
+
+        cry_tables = db.query(CryTable).filter(
             CryTable.pet_id == pet_id,
             CryTable.state == standardized_state,
-            PetTable.user_id == user_id
         ).all()
         return [cry_table_to_schema(cry) for cry in cry_tables]
 

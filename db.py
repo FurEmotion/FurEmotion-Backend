@@ -1,18 +1,17 @@
-# db.py
+# db/__init__.py
 import os
+from log import logger
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 
 # from core.env import env
-from log import logger
+from constants.path import PROJECT_DIR
+from db_base import DB_Base
+from model import *
 
-# 1. Declarative Base 먼저 정의
-DB_Base = declarative_base()
 
 # 2. 데이터베이스 URL 설정 using absolute path
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "Database.db")
+DB_PATH = os.path.join(PROJECT_DIR, "Database.db")
 DB_URL = f'sqlite:///{DB_PATH}'
 
 engine = create_engine(DB_URL, connect_args={
@@ -25,9 +24,6 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()
 
-
-# 3. 모델 임포트 (DB_Base가 먼저 정의되어야 함)
-from model import *
 
 # 4. 테이블 생성
 try:

@@ -27,7 +27,7 @@ def handle_http_exceptions(func: Callable) -> Callable:
                 f"Async function {func.__name__} executed successfully")
             return result
         except (ValidationError, NegativeAgeError, InvalidSpeciesError,
-                DuplicateUidError, DuplicateEmailError) as ve:
+                DuplicateUidError, DuplicateEmailError, WrongCryOfSpeciesError) as ve:
             logger.error(f"400 Bad Request: {str(ve)}", exc_info=True)
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
@@ -54,7 +54,7 @@ def handle_http_exceptions(func: Callable) -> Callable:
             logger.info(f"Sync function {func.__name__} executed successfully")
             return result
         except (ValidationError, NegativeAgeError, InvalidSpeciesError,
-                DuplicateUidError, DuplicateEmailError) as ve:
+                DuplicateUidError, DuplicateEmailError, WrongCryOfSpeciesError) as ve:
             logger.error(f"400 Bad Request: {str(ve)}", exc_info=True)
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST, detail=str(ve))

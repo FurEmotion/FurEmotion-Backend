@@ -19,6 +19,11 @@ class PetNotFoundError(Exception):
     pass
 
 
+class WrongCryOfSpeciesError(Exception):
+    """Raised when a cry of a wrong species is found."""
+    pass
+
+
 class CryNotFoundError(Exception):
     """Raised when a cry is not found."""
     pass

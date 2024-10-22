@@ -2,9 +2,8 @@
 from __future__ import annotations
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-import uuid
 
-from db import DB_Base
+from db_base import DB_Base
 
 
 class UserTable(DB_Base):

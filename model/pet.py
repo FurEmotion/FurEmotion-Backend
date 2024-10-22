@@ -3,7 +3,7 @@ from __future__ import annotations
 from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from db import DB_Base
+from db_base import DB_Base
 from enums.species import SPECIES_KR_TO_EN
 
 
