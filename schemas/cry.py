@@ -47,7 +47,7 @@ class CreateCryInput(BaseModel):
     time: datetime
     state: str
     audioId: str
-    predictMap: Dict
+    predictMap: dict
     intensity: Optional[str] = 'medium'
     duration: Optional[float] = 2.0
 
@@ -101,3 +101,7 @@ class GetCriesWithStateOutput(BaseOutput):
 
 class GetCriesBetweenTimeOutput(BaseOutput):
     cries: Optional[List[Cry]] = None
+
+
+class PredictCryOutput(BaseOutput):
+    cry: Optional[Cry] = None

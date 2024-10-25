@@ -15,7 +15,7 @@ class UserTable(DB_Base):
 
     # Relationship to PetTable
     pets = relationship("PetTable", back_populates="owner",
-                        cascade="all, delete-orphan")
+                        cascade="all, delete-orphan", lazy='noload')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

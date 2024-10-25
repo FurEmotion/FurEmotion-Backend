@@ -1,5 +1,5 @@
 # apis/cry.py
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, UploadFile, File
 from sqlalchemy.orm import Session
 from datetime import datetime
 
@@ -19,11 +19,11 @@ router = APIRouter(
 
 @router.post("/create", dependencies=[Depends(JWTBearer())], response_model=CreateCryOutput)
 @handle_http_exceptions
-def create_cry_endpoint(
+async def create_cry_endpoint(
         create_cry_input: CreateCryInput,
         db: Session = Depends(get_db_session),
         user_id: str = Depends(JWTBearer())) -> CreateCryOutput:
-    cry = cry_service.create_cry(db, create_cry_input, user_id).to_korean()
+    cry = await cry_service.create_cry(db, create_cry_input, user_id).to_korean()
     return CreateCryOutput(cry=cry, success=True, message="Cry created successfully")
 
 
@@ -47,28 +47,6 @@ def get_pet_cries_endpoint(
     for i in range(len(cries)):
         cries[i] = cries[i].to_korean()
     return GetPetCriesOutput(cries=cries, success=True, message="Cries fetched successfully")
-
-
-@router.put("/{cry_id}", dependencies=[Depends(JWTBearer())], response_model=UpdateCryOutput)
-@handle_http_exceptions
-def update_cry_endpoint(
-        cry_id: int,
-        update_cry_input: UpdateCryInput,
-        db: Session = Depends(get_db_session),
-        user_id: str = Depends(JWTBearer())) -> UpdateCryOutput:
-    cry = cry_service.update_cry(
-        db, cry_id, update_cry_input, user_id).to_korean()
-    return UpdateCryOutput(cry=cry, success=True, message="Cry updated successfully")
-
-
-@router.delete("/{cry_id}", dependencies=[Depends(JWTBearer())], response_model=DeleteCryOutput)
-@handle_http_exceptions
-def delete_cry_endpoint(
-        cry_id: int,
-        db: Session = Depends(get_db_session),
-        user_id: str = Depends(JWTBearer())) -> DeleteCryOutput:
-    cry_service.delete_cry(db, cry_id, user_id)
-    return DeleteCryOutput(success=True, message="Cry deleted successfully")
 
 
 @router.get("/search/state", dependencies=[Depends(JWTBearer())], response_model=GetCriesWithStateOutput)
@@ -99,3 +77,48 @@ def get_pets_between_time_endpoint(
     for i in range(len(cries)):
         cries[i] = cries[i].to_korean()
     return GetCriesBetweenTimeOutput(pets=cries, success=True, message="Cries fetched successfully")
+
+
+@router.get("/inspect", dependencies=[Depends(JWTBearer())])
+@handle_http_exceptions
+def inspect_cry_endpoint(
+        pet_id: int = Query(..., description="ID of the pet"),
+        db: Session = Depends(get_db_session),
+        user_id: str = Depends(JWTBearer())):
+    inspect_result = cry_service.inspect_cry(db, pet_id, user_id)
+    return {"success": True, "message": "Cry inspected successfully", "result": inspect_result}
+
+
+@router.post("/predict", dependencies=[Depends(JWTBearer())])
+@handle_http_exceptions
+async def predict_cry_endpoint(
+        file: UploadFile = File(...),
+        pet_id: int = Query(..., description="ID of the pet"),
+        db: Session = Depends(get_db_session),
+        user_id: str = Depends(JWTBearer())) -> PredictCryOutput:
+    if file == None or not file.filename.endswith(".wav"):
+        raise WavFileNotFoundError("Wav file not found")
+    cry = await cry_service.predict_cry(db, file, pet_id, user_id)
+    return PredictCryOutput(cry=cry, success=True, message="Cry predicted successfully")
+
+
+@router.put("/{cry_id}", dependencies=[Depends(JWTBearer())], response_model=UpdateCryOutput)
+@handle_http_exceptions
+def update_cry_endpoint(
+        cry_id: int,
+        update_cry_input: UpdateCryInput,
+        db: Session = Depends(get_db_session),
+        user_id: str = Depends(JWTBearer())) -> UpdateCryOutput:
+    cry = cry_service.update_cry(
+        db, cry_id, update_cry_input, user_id).to_korean()
+    return UpdateCryOutput(cry=cry, success=True, message="Cry updated successfully")
+
+
+@router.delete("/{cry_id}", dependencies=[Depends(JWTBearer())], response_model=DeleteCryOutput)
+@handle_http_exceptions
+def delete_cry_endpoint(
+        cry_id: int,
+        db: Session = Depends(get_db_session),
+        user_id: str = Depends(JWTBearer())) -> DeleteCryOutput:
+    cry_service.delete_cry(db, cry_id, user_id)
+    return DeleteCryOutput(success=True, message="Cry deleted successfully")

@@ -25,7 +25,7 @@ class PetTable(DB_Base):
 
     # Relationship to CryTable
     cries = relationship("CryTable", back_populates="pet",
-                         cascade="all, delete-orphan")
+                         cascade="all, delete-orphan", lazy='noload')
 
     def __init__(self, **kwargs):
         species = kwargs.get('species')

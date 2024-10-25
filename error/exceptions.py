@@ -19,6 +19,11 @@ class PetNotFoundError(Exception):
     pass
 
 
+class WavFileNotFoundError(Exception):
+    """Raised when a wav file is not found."""
+    pass
+
+
 class WrongCryOfSpeciesError(Exception):
     """Raised when a cry of a wrong species is found."""
     pass
