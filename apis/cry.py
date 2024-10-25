@@ -60,7 +60,7 @@ def get_pets_with_state_endpoint(
         db, pet_id, query_state, user_id)
     for i in range(len(cries)):
         cries[i] = cries[i].to_korean()
-    return GetCriesWithStateOutput(pets=cries, success=True, message="Cries fetched successfully")
+    return GetCriesWithStateOutput(cries=cries, success=True, message="Cries fetched successfully")
 
 
 @router.get("/search/time", dependencies=[Depends(JWTBearer())], response_model=GetCriesBetweenTimeOutput)
@@ -76,7 +76,7 @@ def get_pets_between_time_endpoint(
         db, pet_id, start_time, end_time, user_id)
     for i in range(len(cries)):
         cries[i] = cries[i].to_korean()
-    return GetCriesBetweenTimeOutput(pets=cries, success=True, message="Cries fetched successfully")
+    return GetCriesBetweenTimeOutput(cries=cries, success=True, message="Cries fetched successfully")
 
 
 @router.get("/inspect", dependencies=[Depends(JWTBearer())])
