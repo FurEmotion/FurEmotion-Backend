@@ -19,6 +19,11 @@ class PetNotFoundError(Exception):
     pass
 
 
+class WrongFileTypeError(Exception):
+    """Raised when a file is of the wrong type."""
+    pass
+
+
 class WavFileNotFoundError(Exception):
     """Raised when a wav file is not found."""
     pass

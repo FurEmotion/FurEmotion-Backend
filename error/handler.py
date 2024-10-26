@@ -31,7 +31,7 @@ def handle_http_exceptions(func: Callable) -> Callable:
             logger.error(f"400 Bad Request: {str(ve)}", exc_info=True)
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
-        except UnauthorizedError as ue:
+        except (UnauthorizedError, WrongFileTypeError) as ue:
             logger.error(f"403 Forbidden: {str(ue)}", exc_info=True)
             raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail=str(ue))
         except (PetNotFoundError, CryNotFoundError, UserNotFoundError) as pnfe:
@@ -58,7 +58,7 @@ def handle_http_exceptions(func: Callable) -> Callable:
             logger.error(f"400 Bad Request: {str(ve)}", exc_info=True)
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST, detail=str(ve))
-        except UnauthorizedError as ue:
+        except (UnauthorizedError, WrongFileTypeError) as ue:
             logger.error(f"403 Forbidden: {str(ue)}", exc_info=True)
             raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail=str(ue))
         except (PetNotFoundError, CryNotFoundError, UserNotFoundError) as pnfe:

@@ -120,7 +120,7 @@ class CryService:
         cry_tables = db.query(CryTable).join(PetTable).filter(
             CryTable.pet_id == pet_id,
             CryTable.time >= start_time,
-            CryTable.time <= end_time,
+            CryTable.time <= end_time + timedelta(days=1),
             PetTable.user_id == user_id
         ).all()
         return [cry_table_to_schema(cry) for cry in cry_tables]
@@ -145,17 +145,20 @@ class CryService:
                 res = json.loads(f.read())
             return res
 
+        query = db.query(CryTable).filter(
+            CryTable.pet_id == pet_id,
+            CryTable.time >= start_date,
+            CryTable.time <= end_date
+        )
+        sql_query = query.statement.compile(
+            dialect=sqlite.dialect(), compile_kwargs={"literal_binds": True})
+
+        df = pd.read_sql(sql_query, db.connection())
+
+        if len(df) < 100:
+            return None
+
         try:
-            query = db.query(CryTable).filter(
-                CryTable.pet_id == pet_id,
-                CryTable.time >= start_date,
-                CryTable.time <= end_date
-            )
-            sql_query = query.statement.compile(
-                dialect=sqlite.dialect(), compile_kwargs={"literal_binds": True})
-
-            df = pd.read_sql(sql_query, db.connection())
-
             # 1. 주로 우는 시간대 분석
             cry_freq_hour = df['time'].dt.hour.value_counts().sort_index()
 
@@ -222,13 +225,15 @@ class CryService:
             f.write(content)
 
         # 분석 결과 DB에 저장
-        cry = await self.create_cry(db, CreateCryInput(
+        create_cry_input = CreateCryInput(
             pet_id=pet_id,
             time=curtime,
-            state=list(predictMap.keys())[0],
+            state=max(predictMap, key=predictMap.get),
             audioId=file_id,
             predictMap=predictMap,
-        ), user_id)
+        )
+        print("create cry: ", create_cry_input)
+        cry = await self.create_cry(db, create_cry_input, user_id)
 
         return cry
 
