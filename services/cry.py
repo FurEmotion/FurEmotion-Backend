@@ -214,7 +214,7 @@ class CryService:
 
         # 반려동물 울음 분석
         content = await file.read()
-        predictMap = await cry_predict(content, pet.species)
+        predictMap = await cry_predict(content, pet.species, user_id)
 
         # wav 파일 저장
         curtime = datetime.now()
